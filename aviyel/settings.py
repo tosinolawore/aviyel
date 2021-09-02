@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'aldjemy',
     'account.apps.AccountConfig',
+    'participant.apps.ParticipantConfig',
+    'speaker.apps.SpeakerConfig',
 ]
 
 MIDDLEWARE = [
