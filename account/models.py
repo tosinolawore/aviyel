@@ -69,9 +69,14 @@ class UserManager(BaseUserManager):
             )
         return self.none()
 
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model extending the AbstractBaseUser"""
+
+    USER_TYPES = (
+        (None,None),
+        ('SPEAKER','Speaker'),
+        ('PARTICIPANT','Participant'),
+    )
     
     username_validator = UnicodeUsernameValidator()
 
@@ -102,6 +107,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    user_type = models.CharField(max_length=40,choices=USER_TYPES,default=None)
 
     objects = UserManager()
 
