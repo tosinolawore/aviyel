@@ -13,4 +13,4 @@ class Participant(get_user_model()):
     class Meta:
         proxy = True
         app_label = 'auth'
-        verbose_name = "Participants"
+        verbose_name = "Participant"
