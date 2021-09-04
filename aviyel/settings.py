@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'participant.apps.ParticipantConfig',
     'speaker.apps.SpeakerConfig',
     'conference.apps.ConferenceConfig',
+    'talk.apps.TalkConfig',
 ]
 
 MIDDLEWARE = [

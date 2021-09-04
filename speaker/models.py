@@ -12,6 +12,6 @@ class Speaker(get_user_model()):
 
     class Meta:
         proxy = True
-        app_label = 'auth'
+        app_label = 'speaker'
         verbose_name = 'Speaker'
 
