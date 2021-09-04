@@ -31,17 +31,17 @@ class ConferenceViewTestCase(TestCase):
 
         self.data = {"title":"This is a Test Conference Title.", "description":"This is a Test Conference description.", "start_date":"2021-09-05", "end_date":"2021-09-05"}
         self.response = self.client.post(
-            reverse('create_post'),
-            self.post_data,
+            reverse('create_conference'),
+            self.data,
             format="json")
 
     def test_api_create_conference(self):
         self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
 
     def test_api_get_conference(self):
-        conference = Conference.objects.get(id=1)
+        conference = Conference.objects.get()
         response = self.client.get(
-            '/conference/',
+            '/conferences/',
             kwargs={'pk': conference.id}, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -49,7 +49,7 @@ class ConferenceViewTestCase(TestCase):
 
     def test_api_update_conference(self):
         conference = Conference.objects.get()
-        change_conference = {'title': 'A new title'}
+        change_conference = {'title': 'A new title', "description":"A new description.", "start_date":"2021-09-05", "end_date":"2021-09-05"}
         res = self.client.put(
             reverse('conference_details', kwargs={'pk': conference.id}),
             change_conference, format='json'
