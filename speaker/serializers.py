@@ -8,4 +8,4 @@ class SpeakerSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Speaker
-        fields = ('id', 'username', 'email', 'first_name','last_name', 'talks')
+        fields = ('id', 'username', 'email', 'first_name','last_name', 'talks','user_type')
