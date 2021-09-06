@@ -8,8 +8,8 @@ class Talk(models.Model):
     description = models.TextField()
     duration = models.DurationField()
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE)
-    speakers = models.ManyToManyField(Speaker, related_name="talks_s")
-    participants = models.ManyToManyField(Participant, related_name="talks_p")
+    speakers = models.ManyToManyField(Speaker, related_name="talks_s", blank=True)
+    participants = models.ManyToManyField(Participant, related_name="talks_p", blank=True)
     date = models.DateTimeField()
 
     def __str__(self):
