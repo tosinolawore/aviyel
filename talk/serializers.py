@@ -5,6 +5,7 @@ from participant.serializers import ParticipantSerializer
 
 class TalkSerializer(serializers.ModelSerializer):
     """Serializer to map the Talk Model instance into JSON format."""
+    conference = serializers.ReadOnlyField(source='conference.title')
     speakers = SpeakerSerializer(many=True, required=False, read_only=True)
     participants = ParticipantSerializer(many=True, required=False, read_only=True)
     

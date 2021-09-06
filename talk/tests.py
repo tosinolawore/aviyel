@@ -4,6 +4,9 @@ from conference.models import Conference
 from speaker.models import Speaker
 from participant.models import Participant
 from datetime import timedelta, datetime
+from rest_framework.test import APIClient
+from rest_framework.views import status
+from django.urls import reverse
 
 class TalkTestCase(TestCase):
     """This class defines the test suite for the Conference model."""
@@ -33,4 +36,28 @@ class TalkTestCase(TestCase):
         self.talk.save()
         new_count = Talk.objects.count()
         self.assertNotEqual(old_count, new_count)
+
+class TalkViewTestCase(TestCase):
+    """Test suite for the api views."""
+
+    def setUp(self):
+        """Define the test client and other test variables."""
+
+        # Initialize client
+        self.client = APIClient()
+
+        self.conference = Conference(title="Test Conference",description="This conference was for Software Engineers on the importance of TDD.",start_date="2021-09-05",end_date="2021-09-05")
+
         
+
+    def test_api_create_talk(self):
+        self.conference.save()
+
+        self.data = {"title":"Test Talk", "description":"Description of a test talk.", "duration":timedelta(days=2), "date":datetime.now()}
+        
+        response = self.client.post(
+            reverse('create_talk', kwargs={'conference_id': self.conference.id}),
+            self.data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+   
