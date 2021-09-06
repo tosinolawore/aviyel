@@ -60,4 +60,44 @@ class TalkViewTestCase(TestCase):
             self.data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_api_get_talk(self):
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        response = self.client.get(
+            reverse('talk_details', kwargs={'conference_id': self.conference.id, 'pk': talk.id}), format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, talk)
+
+    def test_api_update_talk(self):
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        change_talk = {"title":"A new Test Talk", "description":" A new description of a test talk.", "duration":timedelta(days=2), "date":datetime.now()}
+        res = self.client.put(
+            reverse('talk_details', kwargs={'conference_id': self.conference.id, 'pk': talk.id}),
+            change_talk, format='json'
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_api_delete_talk(self):
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+        
+        response = self.client.delete(
+            reverse('talk_details', kwargs={'conference_id': self.conference.id, 'pk': talk.id}),
+            format='json',
+            follow=True)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+
    

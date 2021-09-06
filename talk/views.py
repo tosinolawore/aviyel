@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 class TalkListView(APIView):
+    """
+     List all Talks, create a talk instance.
+    """
     queryset = Talk.objects.all()
     serializer_class = TalkSerializer
 
@@ -30,3 +33,31 @@ class TalkListView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class TalkDetailView(APIView):
+    """
+    Retrieve, update or delete a talk instance.
+    """
+    def get_object(self, conference_id, pk):
+        try:
+            conference = Conference.objects.get(pk=conference_id)
+            return Talk.objects.get(pk=pk, conference=conference)
+        except Talk.DoesNotExist:
+            raise Http404
+
+    def get(self, request, conference_id, pk, format=None):
+        talk = self.get_object(conference_id, pk)
+        serializer = TalkSerializer(talk)
+        return Response(serializer.data)
+
+    def put(self, request, conference_id, pk, format=None):
+        talk = self.get_object(conference_id, pk)
+        serializer = TalkSerializer(talk, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, conference_id, pk, format=None):
+        talk = self.get_object(conference_id, pk)
+        talk.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
