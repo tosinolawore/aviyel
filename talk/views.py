@@ -6,6 +6,10 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
+from participant.models import Participant
+from speaker.models import Speaker
+from participant.serializers import ParticipantSerializer
+from speaker.serializers import SpeakerSerializer
 
 class TalkListView(APIView):
     """
@@ -61,3 +65,31 @@ class TalkDetailView(APIView):
         talk = self.get_object(conference_id, pk)
         talk.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AddParticipantView(APIView):
+    """
+     Add Participant/Speaker to a Talk.
+    """
+    queryset = Talk.objects.all()
+    serializer_class = TalkSerializer
+
+    def post(self, request, talk_id, format=None):
+        try:
+            talk = Talk.objects.get(pk=talk_id)
+
+            # get participant id from post data
+            participant_id = request.data["participant_id"]
+        except Talk.DoesNotExist:
+            raise Http404
+
+        # get participant instance
+        participant = Participant.objects.get(pk=participant_id)
+
+        # add participant to talk 
+        talk.participants.add(participant)
+        talk.save()
+
+        #serialize result
+        serializer = TalkSerializer(talk)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

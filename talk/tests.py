@@ -93,11 +93,28 @@ class TalkViewTestCase(TestCase):
         talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
 
         talk.save()
-        
+
         response = self.client.delete(
             reverse('talk_details', kwargs={'conference_id': self.conference.id, 'pk': talk.id}),
             format='json',
             follow=True)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_add_participant(self):
+        # Create a Talk
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        # Create a Participant
+        participant = Participant(username="TestUser2",email="testuser2@test.com",user_type='PARTICIPANT')
+        participant.save()
+        
+        response = self.client.post(
+            reverse('add_participant', kwargs={'talk_id': talk.id}), {"participant_id":participant.id},
+            format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
    
