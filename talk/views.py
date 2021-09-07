@@ -18,8 +18,9 @@ class TalkListView(APIView):
     queryset = Talk.objects.all()
     serializer_class = TalkSerializer
 
-    def get(self, request, format=None):
-        talks = Talk.objects.all()
+    def get(self, request, conference_id, format=None):
+        conference = Conference.objects.get(pk=conference_id)
+        talks = Talk.objects.filter(conference=conference)
         serializer = TalkSerializer(talks, many=True)
         return Response(serializer.data)
 
