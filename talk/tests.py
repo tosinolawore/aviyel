@@ -118,3 +118,19 @@ class TalkViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
    
+    def test_api_delete_talk(self):
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        # Create a Participant
+        participant = Participant(username="TestUser3",email="testuser3@test.com",user_type='PARTICIPANT')
+        participant.save()
+
+        response = self.client.delete(
+            reverse('delete_participant', kwargs={'talk_id': talk.id, 'pk': participant.id}),
+            format='json',
+            follow=True)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)

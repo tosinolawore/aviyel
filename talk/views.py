@@ -68,7 +68,7 @@ class TalkDetailView(APIView):
 
 class AddParticipantView(APIView):
     """
-     Add Participant/Speaker to a Talk.
+     Add Participant to a Talk.
     """
     queryset = Talk.objects.all()
     serializer_class = TalkSerializer
@@ -93,3 +93,23 @@ class AddParticipantView(APIView):
         serializer = TalkSerializer(talk)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class DeleteParticipantView(APIView):
+    """
+     Delete Participant from a Talk.
+    """
+    queryset = Talk.objects.all()
+    serializer_class = TalkSerializer
+
+    def delete(self, request, talk_id, pk, format=None):
+        try:
+            talk = Talk.objects.get(pk=talk_id)
+            participant = Participant.objects.get(pk=pk)
+        except Talk.DoesNotExist:
+            raise Http404
+
+        # add participant to talk 
+        talk.participants.remove(participant)
+        talk.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
