@@ -118,7 +118,7 @@ class TalkViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
    
-    def test_api_delete_talk(self):
+    def test_api_delete_participant(self):
         self.conference.save()
 
         talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
@@ -131,6 +131,41 @@ class TalkViewTestCase(TestCase):
 
         response = self.client.delete(
             reverse('delete_participant', kwargs={'talk_id': talk.id, 'pk': participant.id}),
+            format='json',
+            follow=True)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_add_speaker(self):
+        # Create a Talk
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        # Create a Speaker
+        speaker = Speaker(username="TestUser2",email="testuser2@test.com",user_type='SPEAKER')
+        speaker.save()
+        
+        response = self.client.post(
+            reverse('add_speaker', kwargs={'talk_id': talk.id}), {"speaker_id":speaker.id},
+            format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+   
+    def test_api_delete_speaker(self):
+        self.conference.save()
+
+        talk = Talk(title="Test Talk", description="Description of a test talk.", duration=timedelta(days=2), conference=self.conference, date=datetime.now())
+
+        talk.save()
+
+        # Create a Speaker
+        speaker = Speaker(username="TestUser3",email="testuser3@test.com",user_type='SPEAKER')
+        speaker.save()
+
+        response = self.client.delete(
+            reverse('delete_speaker', kwargs={'talk_id': talk.id, 'pk': speaker.id}),
             format='json',
             follow=True)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)

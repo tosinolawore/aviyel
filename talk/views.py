@@ -108,8 +108,56 @@ class DeleteParticipantView(APIView):
         except Talk.DoesNotExist:
             raise Http404
 
-        # add participant to talk 
+        # remove participant from talk 
         talk.participants.remove(participant)
+        talk.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AddSpeakerView(APIView):
+    """
+     Add Speaker to a Talk.
+    """
+    queryset = Talk.objects.all()
+    serializer_class = TalkSerializer
+
+    def post(self, request, talk_id, format=None):
+        try:
+            talk = Talk.objects.get(pk=talk_id)
+
+            # get speaker id from post data
+            speaker_id = request.data["speaker_id"]
+        except Talk.DoesNotExist:
+            raise Http404
+
+        # get speaker instance
+        speaker = Speaker.objects.get(pk=speaker_id)
+
+        # add speaker to talk 
+        talk.speakers.add(speaker)
+        talk.save()
+
+        #serialize result
+        serializer = TalkSerializer(talk)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class DeleteSpeakerView(APIView):
+    """
+     Delete Speaker from a Talk.
+    """
+    queryset = Talk.objects.all()
+    serializer_class = TalkSerializer
+
+    def delete(self, request, talk_id, pk, format=None):
+        try:
+            talk = Talk.objects.get(pk=talk_id)
+            speaker = Speaker.objects.get(pk=pk)
+        except Talk.DoesNotExist:
+            raise Http404
+
+        # remove speaker from talk 
+        talk.speakers.remove(speaker)
         talk.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
