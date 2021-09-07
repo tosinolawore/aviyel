@@ -5,7 +5,6 @@ PROJECT DESCRIPTION
 Simple conference management system for Aviyel.
 
 - Uses Postgres Database
-- Uses SQLAlchemy as ORM
 
 PROJECT REQUIREMENTS (Required Libraries)
 -----------------------------------------
