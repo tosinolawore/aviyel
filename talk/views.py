@@ -42,6 +42,9 @@ class TalkDetailView(APIView):
     """
     Retrieve, update or delete a talk instance.
     """
+    queryset = Talk.objects.all()
+    serializer_class = TalkSerializer
+    
     def get_object(self, conference_id, pk):
         try:
             conference = Conference.objects.get(pk=conference_id)
@@ -79,12 +82,21 @@ class AddParticipantView(APIView):
             talk = Talk.objects.get(pk=talk_id)
 
             # get participant id from post data
-            participant_id = request.data["participant_id"]
+            postdata = request.GET
+            participant_id = postdata["participant_id"]
         except Talk.DoesNotExist:
-            raise Http404
+            return Response({
+            "message": "Talk doesn't exist. Create talk.",
+        })
 
-        # get participant instance
-        participant = Participant.objects.get(pk=participant_id)
+        try:
+            # get participant instance
+            participant = Participant.objects.get(pk=participant_id)
+        except Participant.DoesNotExist:
+            return Response({
+            "message": "Participant with given ID doesn't exist. Create Participant.",
+            "CreateParticipantEndpoint": "Send POST request to /participants/ with username, password and email."
+        })
 
         # add participant to talk 
         talk.participants.add(participant)
@@ -113,7 +125,10 @@ class DeleteParticipantView(APIView):
         talk.participants.remove(participant)
         talk.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        #serialize result
+        serializer = TalkSerializer(talk)
+
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
 class AddSpeakerView(APIView):
     """
@@ -126,13 +141,20 @@ class AddSpeakerView(APIView):
         try:
             talk = Talk.objects.get(pk=talk_id)
 
-            # get speaker id from post data
-            speaker_id = request.data["speaker_id"]
+            # get participant id from post data
+            postdata = request.GET
+            speaker_id = postdata["speaker_id"]
         except Talk.DoesNotExist:
             raise Http404
 
-        # get speaker instance
-        speaker = Speaker.objects.get(pk=speaker_id)
+        try:
+            # get speaker instance
+            speaker = Speaker.objects.get(pk=speaker_id)
+        except Speaker.DoesNotExist:
+            return Response({
+            "message": "Speaker with given ID doesn't exist. Create Speaker.",
+            "CreateSpeakerEndpoint": "Send POST request to /speakers/ with username, password and email."
+        })
 
         # add speaker to talk 
         talk.speakers.add(speaker)
@@ -161,4 +183,7 @@ class DeleteSpeakerView(APIView):
         talk.speakers.remove(speaker)
         talk.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        #serialize result
+        serializer = TalkSerializer(talk)
+
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)

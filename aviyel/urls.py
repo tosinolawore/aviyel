@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path('^', include('conference.urls')),
     re_path('^', include('talk.urls')),
+    re_path('^', include('speaker.urls')),
+    re_path('^', include('participant.urls')),
 ]

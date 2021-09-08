@@ -13,7 +13,7 @@ urlpatterns = [
         DeleteParticipantView.as_view(), name="delete_participant"),
       re_path(r'^talks/(?P<talk_id>[0-9]+)/speakers/$',
         AddSpeakerView.as_view(), name="add_speaker"),
-      re_path(r'^talks/(?P<talk_id>[0-9]+)speakers/(?P<pk>[0-9]+)/$',
+      re_path(r'^talks/(?P<talk_id>[0-9]+)/speakers/(?P<pk>[0-9]+)/$',
         DeleteSpeakerView.as_view(), name="delete_speaker"),
 ]
 
