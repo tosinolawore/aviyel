@@ -82,8 +82,7 @@ class AddParticipantView(APIView):
             talk = Talk.objects.get(pk=talk_id)
 
             # get participant id from post data
-            postdata = request.GET
-            participant_id = postdata["participant_id"]
+            participant_id = request.data.get("participant_id")
         except Talk.DoesNotExist:
             return Response({
             "message": "Talk doesn't exist. Create talk.",
@@ -141,9 +140,8 @@ class AddSpeakerView(APIView):
         try:
             talk = Talk.objects.get(pk=talk_id)
 
-            # get participant id from post data
-            postdata = request.GET
-            speaker_id = postdata["speaker_id"]
+            # get speaker id from post data
+            speaker_id = request.data.get("speaker_id")
         except Talk.DoesNotExist:
             raise Http404
 
