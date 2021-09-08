@@ -53,5 +53,5 @@ Delete Speaker from a Talk - /talks/<talk_id>/speakers/<speaker_id> (METHOD: DEL
 
 List Conferences - /conferences/ (METHOD: GET)
 
-List Talks in a Conference - /conferences/<id>/ (METHOD: GET, <id> - unique id for the conference.)
+List Talks in a Conference - /conferences/<id>/talks/ (METHOD: GET, <id> - unique id for the conference.)
 ```
